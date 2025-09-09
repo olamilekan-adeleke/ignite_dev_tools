@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ignite_dev_tools/core/locator.dart';
+import 'package:ignite_dev_tools/feature/home/view/home_tab_page.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' as shadcn;
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  setUpLocator();
+
   runApp(const MyApp());
 }
 
@@ -9,13 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return shadcn.ShadcnApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: shadcn.ThemeData(
+          // colorScheme: shadcn.LegacyColorSchemes.darkZinc(),
+          ),
+      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomeTabPage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
