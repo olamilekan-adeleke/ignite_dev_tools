@@ -35,7 +35,9 @@ final class ObjectNode extends ASTNode {
   const ObjectNode(this.value, this.name, {this.id});
 
   @override
-  String toString() => 'ObjectNode{ name: $name, value: $value }';
+  String toString() {
+    return 'ObjectNode{ name: $name, value: $value }';
+  }
 }
 
 final class ArrayNode extends ASTNode {
@@ -52,7 +54,10 @@ final class StringNode extends ASTNode {
   const StringNode(this.value);
 
   @override
-  String toString() => 'StringNode{ $value }';
+  String toString() {
+    return value;
+    // return 'StringNode{ $value }';
+  }
 }
 
 final class NumberNode extends ASTNode {
@@ -60,7 +65,10 @@ final class NumberNode extends ASTNode {
   const NumberNode(this.value);
 
   @override
-  String toString() => 'NumberNode{ $value }';
+  String toString() {
+    return value.toString();
+    // return 'NumberNode{ $value }';
+  }
 }
 
 final class BooleanNode extends ASTNode {
@@ -68,7 +76,10 @@ final class BooleanNode extends ASTNode {
   const BooleanNode(this.value);
 
   @override
-  String toString() => 'BooleanNode{ $value }';
+  String toString() {
+    return value.toString();
+    // return 'BooleanNode{ $value }';
+  }
 }
 
 final class NullNode extends ASTNode {}

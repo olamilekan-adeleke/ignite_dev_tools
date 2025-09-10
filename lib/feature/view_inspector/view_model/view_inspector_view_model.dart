@@ -47,7 +47,7 @@ final class ViewInspectorViewModel extends ChangeNotifier {
 
     final foundNode = _findNodeByKey(tree!, id);
     if (foundNode != null) {
-      _selectedNode = _convertToTreeNodesWith(foundNode);
+      _selectedNode = _buildSeletedAstTree(foundNode);
       // debugPrint('Found node: $foundNode');
     } else {
       _selectedNode.clear();
@@ -80,9 +80,8 @@ final class ViewInspectorViewModel extends ChangeNotifier {
     return null;
   }
 
-  List<TreeNode<Node>> _convertToTreeNodesWith(ASTNode node) {
+  List<TreeNode<Node>> _buildSeletedAstTree(ASTNode node) {
     final result = <TreeNode<Node>>[];
-    debugPrint('node is ${node.runtimeType}');
 
     if (node is ObjectNode) {
       final name = node.name;
@@ -92,18 +91,35 @@ final class ViewInspectorViewModel extends ChangeNotifier {
       for (final entry in valuse.entries) {
         final key = entry.key;
         final value = entry.value;
-        // if (value is ArrayNode) continue;
 
-        if (value is ObjectNode && value.value['children'] == null) {
-          treeChildren.add(TreeItem(
-            // data: Node(key),
-            data: Node('$key: ${value.value}'),
-          ));
-        } else if (value is ObjectNode) {
-          treeChildren.add(TreeItem(
-            data: Node('$key: ${value.value}'),
-            children: _convertToTreeNodesWith(value),
-          ));
+        final hasArrayOrObject = () {
+          if (value is ArrayNode) {
+            return value.value.any((e) => e is ObjectNode);
+          }
+          if (value is ObjectNode) {
+            return value.value.entries.any((e) => e.value is ObjectNode);
+          }
+
+          return false;
+        }();
+
+        if (value is ObjectNode && hasArrayOrObject) {
+          List<TreeNode<Node>> subtree = [];
+
+          for (final child in value.value.entries) {
+            if (child.value is ObjectNode) {
+              subtree.addAll(_buildSeletedAstTree(child.value));
+            } else {
+              subtree.add(TreeItem(
+                data: Node('${child.key}: ${child.value}'),
+                children: _buildSeletedAstTree(child.value),
+              ));
+            }
+          }
+
+          treeChildren.add(TreeItem(data: Node(key), children: subtree));
+        } else if (value is ObjectNode && !hasArrayOrObject) {
+          treeChildren.addAll(_buildSeletedAstTree(value));
         } else if (value is StringNode) {
           treeChildren.add(TreeItem(
             data: Node('$key: ${value.value}'),
@@ -117,34 +133,17 @@ final class ViewInspectorViewModel extends ChangeNotifier {
 
       final children = node.value['children'];
       if (children is ArrayNode && children.value.isNotEmpty) {
-        debugPrint('children is ${children.runtimeType}');
-        treeChildren.addAll(_convertToTreeNodesWith(children));
+        treeChildren.addAll(_buildSeletedAstTree(children));
       }
 
       result.add(TreeItem(
         data: Node(name, id: node.id),
         children: treeChildren,
-        expanded: true,
+        expanded: node.value['children'] != null,
       ));
     } else if (node is ArrayNode) {
       for (final child in node.value) {
-        // List<TreeNode<Node>> treeChildren = [];
-
-        debugPrint('child is ${child.runtimeType}');
-        // if (child is ObjectNode && child.value['children'] == null) {
-        // result.add(TreeItem(
-        //   data: Node(child.name, id: child.id),
-        //   expanded: true,
-        // ));
-        // }
-        // else if (child is ObjectNode) {
-        //   result.add(TreeItem(
-        //     data: Node('${child.name}: ${child.name}'),
-        //     children: _convertToTreeNodesWith(child),
-        //   ));
-        // }
-
-        result.addAll(_convertToTreeNodesWith(child));
+        result.addAll(_buildSeletedAstTree(child));
       }
     }
 
