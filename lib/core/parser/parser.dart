@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import 'token_type.dart';
 
 final class Parser {
@@ -68,7 +70,7 @@ final class Parser {
       }
     }
 
-    return ObjectNode(nodes, name ?? "-----");
+    return ObjectNode(nodes, name ?? "-----", id: Uuid().v4());
   }
 
   ASTNode _parseList(List<Token> tokens) {
@@ -90,6 +92,6 @@ final class Parser {
       }
     }
 
-    return ArrayNode(nodes);
+    return ArrayNode(nodes, id: Uuid().v4());
   }
 }
