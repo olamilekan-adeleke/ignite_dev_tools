@@ -40,11 +40,7 @@ class _UiViewTreeDetailWidgetState extends State<UiViewTreeDetailWidget> {
       expandIcon: true,
       shrinkWrap: true,
       nodes: selectedTreeItems,
-      branchLine: BranchLine.line,
-      onSelectionChanged:
-          TreeView.defaultSelectionHandler(selectedTreeItems, (val) {
-        setState(() => selectedTreeItems = val);
-      }),
+      branchLine: BranchLine.path,
       builder: (_, node) => TreeItemView(
         leading: Icon(getTreeIcon(node.data.value)).iconXSmall(),
         onExpand:
@@ -54,13 +50,5 @@ class _UiViewTreeDetailWidgetState extends State<UiViewTreeDetailWidget> {
         child: Text(node.data.value).small.mono,
       ),
     );
-  }
-
-  void _expandAll() {
-    setState(() => selectedTreeItems = selectedTreeItems.expandAll());
-  }
-
-  void _collapseAll() {
-    setState(() => selectedTreeItems = selectedTreeItems.collapseAll());
   }
 }
