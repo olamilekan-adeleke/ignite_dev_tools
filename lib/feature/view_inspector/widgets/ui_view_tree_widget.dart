@@ -1,3 +1,5 @@
+import 'package:ignite_dev_tools/core/locator.dart';
+import 'package:ignite_dev_tools/feature/view_inspector/view_model/view_inspector_view_model.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class UIViewTreeWidget extends StatelessWidget {
@@ -11,7 +13,13 @@ class UIViewTreeWidget extends StatelessWidget {
         Gap(10),
         Text('UIView Tree').small.mono.withPadding(horizontal: 16),
         Divider().withPadding(vertical: 10),
-        Expanded(child: Container()),
+        ListenableBuilder(
+          listenable: getIt<ViewInspectorViewModel>(),
+          builder: (context, _) {
+            final tree = getIt<ViewInspectorViewModel>().state?.tree;
+            return Expanded(child: Container());
+          },
+        ),
       ],
     );
   }
