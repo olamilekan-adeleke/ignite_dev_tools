@@ -29,10 +29,11 @@ sealed class ASTNode {
 
 final class ObjectNode extends ASTNode {
   final Map<String, ASTNode> value;
-  const ObjectNode(this.value);
+  final String name;
+  const ObjectNode(this.value, this.name);
 
   @override
-  String toString() => 'ObjectNode{ $value }';
+  String toString() => 'ObjectNode{ name: $name, value: $value }';
 }
 
 final class ArrayNode extends ASTNode {
