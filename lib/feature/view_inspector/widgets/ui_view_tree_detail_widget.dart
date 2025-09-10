@@ -47,7 +47,10 @@ class _UiViewTreeDetailWidgetState extends State<UiViewTreeDetailWidget> {
             TreeView.defaultItemExpandHandler(selectedTreeItems, node, (val) {
           setState(() => selectedTreeItems = val);
         }),
-        child: Text(node.data.value).small.mono,
+        child: Text(
+          node.data.value,
+          style: TextStyle(fontWeight: FontWeight.w400),
+        ).medium.mono,
       ),
     );
   }

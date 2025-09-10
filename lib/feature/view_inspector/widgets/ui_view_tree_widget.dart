@@ -1,3 +1,5 @@
+import 'package:ignite_dev_tools/core/event/log_event.dart';
+import 'package:ignite_dev_tools/core/event_bus/event_data_bus.dart';
 import 'package:ignite_dev_tools/core/locator.dart';
 import 'package:ignite_dev_tools/feature/view_inspector/view_model/view_inspector_view_model.dart';
 import 'package:ignite_dev_tools/feature/view_inspector/widgets/tree_icon_builder.dart';
@@ -50,7 +52,12 @@ class _UIViewTreeWidgetState extends State<UIViewTreeWidget> {
                 .iconSmall()
                 .withMargin(right: iconRightMargin),
           ),
-          Icon(RadixIcons.reload).iconSmall(),
+          GestureDetector(
+            onTap: () {
+              getIt<IgniteUIDataBus>().emit<GetLogsEvent>(GetLogsEvent());
+            },
+            child: Icon(RadixIcons.reload).iconSmall(),
+          ),
         ]).withPadding(horizontal: 16),
         Divider().withPadding(vertical: 10),
         _treeWidget(),

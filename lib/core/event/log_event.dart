@@ -5,3 +5,9 @@ final class NewLogEvent {
 
   const NewLogEvent(this.tree);
 }
+
+final class GetLogsEvent {
+  const GetLogsEvent();
+
+  final String code = "GET_LOG";
+}

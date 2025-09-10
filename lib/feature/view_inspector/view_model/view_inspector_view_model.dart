@@ -1,4 +1,4 @@
-import 'package:ignite_dev_tools/core/event/new_log_event.dart';
+import 'package:ignite_dev_tools/core/event/log_event.dart';
 import 'package:ignite_dev_tools/core/event_bus/event_data_bus.dart';
 import 'package:ignite_dev_tools/core/parser/token_type.dart';
 import 'package:ignite_dev_tools/feature/view_inspector/ui_state/view_inspector_ui_state.dart';
@@ -36,6 +36,7 @@ final class ViewInspectorViewModel extends ChangeNotifier {
     if (filteredTree is! ObjectNode) return;
 
     _treeItems = _convertToTreeNodes(filteredTree);
+    _selectedNode = [];
     notifyListeners();
   }
 
@@ -113,6 +114,7 @@ final class ViewInspectorViewModel extends ChangeNotifier {
               subtree.add(TreeItem(
                 data: Node('${child.key}: ${child.value}'),
                 children: _buildSeletedAstTree(child.value),
+                expanded: true,
               ));
             }
           }
@@ -139,7 +141,7 @@ final class ViewInspectorViewModel extends ChangeNotifier {
       result.add(TreeItem(
         data: Node(name, id: node.id),
         children: treeChildren,
-        expanded: node.value['children'] != null,
+        expanded: node.value['children'] != null || node.value['text'] != null,
       ));
     } else if (node is ArrayNode) {
       for (final child in node.value) {
