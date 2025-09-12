@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ignite_dev_tools/core/event/log_event.dart';
 import 'package:ignite_dev_tools/core/event_bus/event_data_bus.dart';
 import 'package:ignite_dev_tools/core/locator.dart';
@@ -19,30 +21,48 @@ final class LogListener {
     initialize();
   }
 
+  final TcpClient _client = TcpClient();
+  Timer? _timer;
+
   Future<void> initialize() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    final TcpClient client = TcpClient();
-    await client.connect();
-    client.listenForResponse((message) {
+    await _client.connect();
+    _client.listenForResponse((message) {
       _runParser(message);
     });
 
     _dataBus.listen<GetLogsEvent>((event) {
-      client.sendMessage(event.code);
+      _client.sendMessage(event.code);
     });
 
-    client.sendMessage(GetLogsEvent().code);
+    await Future.delayed(const Duration(seconds: 1));
+    _client.sendMessage(GetLogsEvent().code);
+    _periodicUpdate();
+  }
+
+  void _periodicUpdate() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _client.sendMessage(GetLogsEvent().code);
+    });
   }
 
   Future<void> _runParser(String message) async {
     // final logs = await rootBundle.loadString('assets/debug.log');
+    final result = await _parseLogsInBackground(message);
+    if (result is ObjectNode) {
+      _dataBus.emit<NewLogEvent>(NewLogEvent(result));
+    }
+  }
 
+  Future<ASTNode> _parseLogsInBackground(String message) async {
     final List<Token> output = Tokenizer().tokenize(message);
     final ASTNode nodes = Parser().parseValue(output);
+    return nodes;
+  }
 
-    if (nodes is ObjectNode) {
-      _dataBus.emit<NewLogEvent>(NewLogEvent(nodes));
-    }
+  void dispose() {
+    _timer?.cancel();
+    _client.close();
   }
 }

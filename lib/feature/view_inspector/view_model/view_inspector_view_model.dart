@@ -36,12 +36,21 @@ final class ViewInspectorViewModel extends ChangeNotifier {
     if (filteredTree is! ObjectNode) return;
 
     _treeItems = _convertToTreeNodes(filteredTree);
-    _selectedNode = [];
+
+    if (lastSelectedTreeId != null) {
+      onTreeTap();
+      // onTreeTap(id: lastSelectedTreeId);
+    } else {
+      _selectedNode = [];
+    }
     notifyListeners();
   }
 
-  void onTreeTap(String? id) {
-    // debugPrint('onTreeTap: $id');
+  String? lastSelectedTreeId;
+  void onTreeTap({String? id}) {
+    id != null ? lastSelectedTreeId = id : id = lastSelectedTreeId;
+    lastSelectedTreeId = id;
+    debugPrint('onTreeTap: $id');
 
     final tree = uiState?.tree;
     if (tree == null && tree is ObjectNode) return;

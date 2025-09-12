@@ -46,7 +46,7 @@ final class TcpClient {
     _socket?.listen(
       (Uint8List data) {
         final response = utf8.decode(data);
-        debugPrint('Received: "$response"');
+        debugPrint('Received: response');
         onDataReceived?.call(response);
       },
       onDone: () {

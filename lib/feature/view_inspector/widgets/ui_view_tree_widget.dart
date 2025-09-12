@@ -76,7 +76,7 @@ class _UIViewTreeWidgetState extends State<UIViewTreeWidget> {
       }),
       builder: (_, node) => TreeItemView(
         onPressed: () => getIt<ViewInspectorViewModel>().onTreeTap(
-          node.data.id,
+          id: node.data.id,
         ),
         leading: Icon(getTreeIcon(node.data.value)).iconXSmall(),
         onExpand: TreeView.defaultItemExpandHandler(treeItems, node, (val) {

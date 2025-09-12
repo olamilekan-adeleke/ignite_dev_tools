@@ -70,7 +70,15 @@ final class Parser {
       }
     }
 
-    return ObjectNode(nodes, name ?? "-----", id: Uuid().v4());
+    String? key;
+    for (final entry in nodes.entries) {
+      if (entry.key == 'key') {
+        key = entry.value.toString();
+        break;
+      }
+    }
+
+    return ObjectNode(nodes, name ?? "-----", id: key ?? Uuid().v4());
   }
 
   ASTNode _parseList(List<Token> tokens) {
