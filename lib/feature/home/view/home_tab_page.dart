@@ -24,11 +24,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
                 onPressed: () {},
                 child: const Icon(RadixIcons.half2),
               ),
-              OutlineButton(
-                density: ButtonDensity.icon,
-                onPressed: () {},
-                child: const Icon(Icons.search),
-              ),
             ],
           ),
         ],
@@ -44,7 +39,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
           const Gap(16),
           IndexedStack(index: index, children: const [
             ViewInspectorPage(),
-            Placeholder(),
             Placeholder(),
           ]),
         ]).withPadding(horizontal: 16),

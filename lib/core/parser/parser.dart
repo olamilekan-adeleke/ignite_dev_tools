@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import 'token_type.dart';
 
 final class Parser {
@@ -12,7 +14,7 @@ final class Parser {
     return tokens[currentIndex];
   }
 
-  ASTNode parseValue(List<Token> tokens) {
+  ASTNode parseValue(List<Token> tokens, {String? name}) {
     if (tokens.isEmpty) return NullNode();
 
     final Token token = _getCurrentToken(tokens);
@@ -22,21 +24,21 @@ final class Parser {
         hasMore && tokens[currentIndex + 1].type == TokenType.BraceOpen;
     if (isObjectAhead) {
       _eatToken(); //
-      return _parseObject(tokens);
+      return _parseObject(tokens, name: token.value);
     }
 
     return switch (token.type) {
       TokenType.String => StringNode(token.value),
       TokenType.Number => NumberNode(num.parse(token.value)),
       TokenType.Boolean => BooleanNode(bool.parse(token.value)),
-      TokenType.BraceOpen => _parseObject(tokens),
+      TokenType.BraceOpen => _parseObject(tokens, name: name),
       TokenType.BracketOpen => _parseList(tokens),
       TokenType.Null => NullNode(),
       _ => NullNode(),
     };
   }
 
-  ASTNode _parseObject(List<Token> tokens) {
+  ASTNode _parseObject(List<Token> tokens, {String? name}) {
     Map<String, ASTNode> nodes = {};
     _eatToken();
 
@@ -54,7 +56,7 @@ final class Parser {
         _eatToken();
         token = _getCurrentToken(tokens);
 
-        final value = parseValue(tokens);
+        final value = parseValue(tokens, name: key);
         nodes[key] = value;
       } else {
         throw Exception("String key in object. Token type: '${token.type}'");
@@ -68,7 +70,15 @@ final class Parser {
       }
     }
 
-    return ObjectNode(nodes);
+    String? key;
+    for (final entry in nodes.entries) {
+      if (entry.key == 'key') {
+        key = entry.value.toString();
+        break;
+      }
+    }
+
+    return ObjectNode(nodes, name ?? "-----", id: key ?? Uuid().v4());
   }
 
   ASTNode _parseList(List<Token> tokens) {
@@ -90,6 +100,6 @@ final class Parser {
       }
     }
 
-    return ArrayNode(nodes);
+    return ArrayNode(nodes, id: Uuid().v4());
   }
 }

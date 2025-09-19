@@ -83,7 +83,10 @@ final class Tokenizer {
     return char.codeUnitAt(0) >= 65 && char.codeUnitAt(0) <= 90 ||
         char.codeUnitAt(0) >= 97 && char.codeUnitAt(0) <= 122 ||
         char.codeUnitAt(0) >= 48 && char.codeUnitAt(0) <= 57 ||
-        char == '.';
+        char == '.' ||
+        char == '_' ||
+        char == '-' ||
+        char == '+';
   }
 
   bool _isWhitespace(String char) {
