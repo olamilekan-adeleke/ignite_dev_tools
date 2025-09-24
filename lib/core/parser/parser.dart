@@ -51,7 +51,8 @@ final class Parser {
         token = _getCurrentToken(tokens);
 
         if (token.type != TokenType.Colon) {
-          throw Exception('Expected : in key-value pair');
+          final threeTokenBefore = nodes.values;
+          throw Exception('Expected : in key-value pair. $threeTokenBefore');
         }
         _eatToken();
         token = _getCurrentToken(tokens);
