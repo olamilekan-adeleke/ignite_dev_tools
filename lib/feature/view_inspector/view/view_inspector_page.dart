@@ -30,6 +30,7 @@ class ViewInspectorPage extends StatelessWidget {
               minSize: width * 0.4,
               child: SizedBox(
                 height: availableHeight,
+                width: width * 0.7,
                 child: UiViewTreeDetailWidget(),
               ),
             ),

@@ -28,30 +28,41 @@ class _UiViewTreeDetailWidgetState extends State<UiViewTreeDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // SizedBox(width: double.infinity),
       Gap(10),
-      Text('UIView Tree Detail').small.mono.withPadding(horizontal: 16),
+      Row(children: [
+        Text('UIView Tree Detail').small.mono.withPadding(horizontal: 16),
+        // const Spacer(),
+        GestureDetector(
+          onTap: getIt<ViewInspectorViewModel>().toggleExpandAll,
+          child: Icon(BootstrapIcons.arrowsExpand)
+              .iconSmall()
+              .withMargin(right: 10),
+        ),
+      ]),
       Divider().withPadding(vertical: 10),
-      Flexible(child: _treeWidget()),
+      Expanded(
+        child: TreeView<Node>(
+          expandIcon: true,
+          shrinkWrap: true,
+          nodes: selectedTreeItems,
+          branchLine: BranchLine.path,
+          builder: (_, node) => TreeItemView(
+            leading: Icon(getTreeIcon(node.data.value)).iconXSmall(),
+            onExpand: onExpand(node),
+            child: Text(
+              node.data.value,
+              style: TextStyle(fontWeight: FontWeight.w400),
+            ).medium.mono,
+          ),
+        ),
+      ),
     ]);
   }
 
-  Widget _treeWidget() {
-    return TreeView<Node>(
-      expandIcon: true,
-      shrinkWrap: true,
-      nodes: selectedTreeItems,
-      branchLine: BranchLine.path,
-      builder: (_, node) => TreeItemView(
-        leading: Icon(getTreeIcon(node.data.value)).iconXSmall(),
-        onExpand:
-            TreeView.defaultItemExpandHandler(selectedTreeItems, node, (val) {
-          setState(() => selectedTreeItems = val);
-        }),
-        child: Text(
-          node.data.value,
-          style: TextStyle(fontWeight: FontWeight.w400),
-        ).medium.mono,
-      ),
-    );
+  ValueChanged<bool> onExpand(TreeItem<Node> node) {
+    return TreeView.defaultItemExpandHandler(selectedTreeItems, node, (val) {
+      setState(() => selectedTreeItems = val);
+    });
   }
 }

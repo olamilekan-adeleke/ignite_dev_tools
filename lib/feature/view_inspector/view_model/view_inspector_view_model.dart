@@ -26,12 +26,18 @@ final class ViewInspectorViewModel extends ChangeNotifier {
   List<TreeNode<Node>> _selectedNode = [];
   List<TreeNode<Node>> get selectedNode => _selectedNode;
 
+  bool _expandAllDetails = false;
+  bool get expandAllDetails => _expandAllDetails;
+  void toggleExpandAll() {
+    _expandAllDetails = !_expandAllDetails;
+    notifyListeners();
+  }
+
   void _logListener(NewLogEvent event) {
     uiState = ViewInspectorUiState(tree: event.tree);
     notifyListeners();
 
     // debugPrint('tree: ${event.tree}');
-
     final filteredTree = _filterNodesWithChildrenOrText(event.tree);
     if (filteredTree is! ObjectNode) return;
 
@@ -128,7 +134,11 @@ final class ViewInspectorViewModel extends ChangeNotifier {
             }
           }
 
-          treeChildren.add(TreeItem(data: Node(key), children: subtree));
+          treeChildren.add(TreeItem(
+            data: Node(key),
+            children: subtree,
+            expanded: _expandAllDetails,
+          ));
         } else if (value is ObjectNode && !hasArrayOrObject) {
           treeChildren.addAll(_buildSeletedAstTree(value));
         } else if (value is StringNode) {
@@ -150,7 +160,9 @@ final class ViewInspectorViewModel extends ChangeNotifier {
       result.add(TreeItem(
         data: Node(name, id: node.id),
         children: treeChildren,
-        expanded: node.value['children'] != null || node.value['text'] != null,
+        expanded: node.value['children'] != null ||
+            node.value['text'] != null ||
+            _expandAllDetails,
       ));
     } else if (node is ArrayNode) {
       for (final child in node.value) {
