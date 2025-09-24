@@ -174,7 +174,7 @@ final class ViewInspectorViewModel extends ChangeNotifier {
   }
 
   List<TreeNode<Node>> _convertToTreeNodes(ASTNode node) {
-    final result = <TreeNode<Node>>[];
+    final List<TreeNode<Node>> result = <TreeNode<Node>>[];
 
     if (node is ObjectNode) {
       final name = node.name;
@@ -217,6 +217,9 @@ final class ViewInspectorViewModel extends ChangeNotifier {
             hasChildren = true;
           }
         } else if (entry.key == 'text') {
+          filteredValue[entry.key] = entry.value;
+          hasText = true;
+        } else if (entry.key == "key") {
           filteredValue[entry.key] = entry.value;
           hasText = true;
         } else {

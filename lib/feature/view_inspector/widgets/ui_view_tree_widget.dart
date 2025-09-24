@@ -31,37 +31,39 @@ class _UIViewTreeWidgetState extends State<UIViewTreeWidget> {
   Widget build(BuildContext context) {
     final double iconRightMargin = 10;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Gap(10),
-        Row(children: [
-          Icon(LucideIcons.listTree).iconSmall(),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Gap(10),
-          Text('UIView Tree').small.mono,
-          const Spacer(),
-          GestureDetector(
-            onTap: _expandAll,
-            child: Icon(BootstrapIcons.arrowsExpand)
-                .iconSmall()
-                .withMargin(right: iconRightMargin),
-          ),
-          GestureDetector(
-            onTap: _collapseAll,
-            child: Icon(BootstrapIcons.arrowsCollapse)
-                .iconSmall()
-                .withMargin(right: iconRightMargin),
-          ),
-          GestureDetector(
-            onTap: () {
-              getIt<IgniteUIDataBus>().emit<GetLogsEvent>(GetLogsEvent());
-            },
-            child: Icon(RadixIcons.reload).iconSmall(),
-          ),
-        ]).withPadding(horizontal: 16),
-        Divider().withPadding(vertical: 10),
-        _treeWidget(),
-      ],
+          Row(children: [
+            Icon(LucideIcons.listTree).iconSmall(),
+            Gap(10),
+            Text('UIView Tree').small.mono,
+            const Spacer(),
+            GestureDetector(
+              onTap: _expandAll,
+              child: Icon(BootstrapIcons.arrowsExpand)
+                  .iconSmall()
+                  .withMargin(right: iconRightMargin),
+            ),
+            GestureDetector(
+              onTap: _collapseAll,
+              child: Icon(BootstrapIcons.arrowsCollapse)
+                  .iconSmall()
+                  .withMargin(right: iconRightMargin),
+            ),
+            GestureDetector(
+              onTap: () {
+                getIt<IgniteUIDataBus>().emit<GetLogsEvent>(GetLogsEvent());
+              },
+              child: Icon(RadixIcons.reload).iconSmall(),
+            ),
+          ]).withPadding(horizontal: 16),
+          Divider().withPadding(vertical: 10),
+          _treeWidget(),
+        ],
+      ),
     );
   }
 
